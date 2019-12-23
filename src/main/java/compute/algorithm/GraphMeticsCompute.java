@@ -105,8 +105,8 @@ public class GraphMeticsCompute<T> {
         }
     }
 
+    //求解网络总度值
     private Integer getTotalDegree() {
-        //求解网络总度值
         if (degreeMap == null) {
             initDegreeMap();
         }
@@ -118,13 +118,10 @@ public class GraphMeticsCompute<T> {
     }
 
     private void dynamicProgramming() {
-
         if (degreeDistributeFunction == null) {
             initdegreeDistributeFunction();
         }
-
         Double probabilityIntegral = 0D;
-
         for (Map.Entry<Integer, Integer> entry : degreeMap.entrySet()) {
             Integer key = entry.getKey();
             Integer value = entry.getValue();
@@ -176,11 +173,9 @@ public class GraphMeticsCompute<T> {
         if (degreeDistributeFunction == null) {
             initdegreeDistributeFunction();
         }
-
         if (ExeactlyOnce.contains(degree)) {
             return 1D;
         }
-
         if (degreeDistributeFunction.containsKey(degree)) {
             ExeactlyOnce.add(degree);
             return degreeDistributeFunction.get(degree);
@@ -197,13 +192,11 @@ public class GraphMeticsCompute<T> {
             ExeactlyOnce.add(degree);
             return degreeDistributeFunction.get(degree);
         }
-
         Double lastSumValue = distributeFunctionCompute(degreeMap.lowerKey(degree));
         degreeDistributeFunction.put(degreeMap.lowerKey(degree), lastSumValue);
         double currentValue = lastSumValue + degreeMap.get(degree) / vertexNumber.doubleValue();
         degreeDistributeFunction.put(degree, currentValue);
         ExeactlyOnce.add(degree);
-
         return currentValue;
     }
 
@@ -217,8 +210,8 @@ public class GraphMeticsCompute<T> {
         return degreeMap.get(degree) / vertexNumber.doubleValue();
     }
 
+    //计算度和度的分布(∑{(di+1)[1-p(di)]+delta})
     private double getEdgeAndVertexTotalValue() {
-        //计算度和度的分布(∑{(di+1)[1-p(di)]+delta})
         Double sum = 0d;
         for (T vertex : vertexIterator) {
             int degree = graph.getDegree(vertex);
@@ -228,9 +221,9 @@ public class GraphMeticsCompute<T> {
         return sum;
     }
 
+    //计算度和度的分布  - ∑(N/V)*log(N/V)
+    //用于累加求和
     private double structEntropyCompute(AlgorithmLogic logic) {
-        //计算度和度的分布  - ∑(N/V)*log(N/V)
-        //用于累加求和
         double entropy = 0D;
         //累加求和
         for (T vertex : vertexIterator) {

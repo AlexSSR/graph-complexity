@@ -39,7 +39,6 @@ public class CommonMatrixBuilder<T> implements MatrixBuilder<T> {
         }
     }
 
-
     @Override
     public int computeDistance(String node1, String node2) {
         return graphHelper.getDistance(node1, node2);
