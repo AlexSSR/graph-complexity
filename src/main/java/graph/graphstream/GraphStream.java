@@ -47,10 +47,10 @@ public class GraphStream {
         GraphMeticsCompute<Node> compute3 = new GraphMeticsCompute<>(eachNode3, flexibleGraph3);
         GraphMeticsCompute<Node> compute4 = new GraphMeticsCompute<>(eachNode4, flexibleGraph4);
 
-        System.out.println(compute1.MAX_DD_ENTROPY);
-        System.out.println(compute2.MAX_DD_ENTROPY);
-        System.out.println(compute3.MAX_DD_ENTROPY);
-        System.out.println(compute4.MAX_DD_ENTROPY);
+        System.out.println(compute1.MAX_ENTROPY);
+        System.out.println(compute2.MAX_ENTROPY);
+        System.out.println(compute3.MAX_ENTROPY);
+        System.out.println(compute4.MAX_ENTROPY);
         //graph.display();
 
         EnhancedOption option = new EnhancedOption();

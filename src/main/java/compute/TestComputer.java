@@ -22,5 +22,8 @@ public class TestComputer {
         GraphMeticsCompute<Node> compute3 = new GraphMeticsCompute<>(eachNode3, flexibleGraph3);
         System.out.println(compute3.MAX_DD_ENTROPY);
         System.out.println(compute3.getDDEntropy(true));
+        System.out.println(compute3.getDDEntropyAltered(true));
+        System.out.println(compute3.getWUEntropy());
+        System.out.println(compute3.getSDEntropy());
     }
 }

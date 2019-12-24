@@ -39,12 +39,14 @@ public class GraphMeticsCompute<T> {
     ReentrantLock lock = new ReentrantLock();
 
     public Double MAX_DD_ENTROPY;
+    public Double MAX_ENTROPY;
 
     public GraphMeticsCompute(Iterable<T> vertexIterator, FlexibleGraph graph) {
         this.vertexIterator = vertexIterator;
         this.graph = graph;
         this.vertexNumber = graph.getVertexSize();
         MAX_DD_ENTROPY = Math.log10(vertexNumber - 1);
+        MAX_ENTROPY = Math.log10(vertexNumber);
     }
 
     public GraphMeticsCompute(Iterable<T> vertexIterator, FlexibleGraph graph, MatrixBuilder matrix) {
@@ -160,12 +162,10 @@ public class GraphMeticsCompute<T> {
             degreeDistributeFunction.put(degree, lastSumValue + degreeMap.get(degree) / vertexNumber.doubleValue());
             return degreeDistributeFunction.get(degree);
         }
-
         Double lastSumValue = distributeFunctionCompute(degreeMap.lowerKey(degree));
         degreeDistributeFunction.put(degreeMap.lowerKey(degree), lastSumValue);
         double currentValue = lastSumValue + degreeMap.get(degree) / vertexNumber.doubleValue();
         degreeDistributeFunction.put(degree, currentValue);
-
         return currentValue;
     }
 
@@ -200,6 +200,21 @@ public class GraphMeticsCompute<T> {
         return currentValue;
     }
 
+    private Double distributeFunctionComputeProbabilityAltered(Integer degree) {
+        if (degreeProbability == null) {
+            initdegreeProbability();
+        }
+        if (ExeactlyOnce.contains(degree)) {
+            return 1D;
+        }
+        if (degreeProbability.containsKey(degree)) {
+            ExeactlyOnce.add(degree);
+            return degreeProbability.get(degree);
+        }
+        ExeactlyOnce.add(degree);
+        return degreeMap.get(degree) / vertexNumber.doubleValue();
+    }
+
     private Double distributeFunctionComputeProbability(Integer degree) {
         if (degreeProbability == null) {
             initdegreeProbability();
@@ -215,7 +230,7 @@ public class GraphMeticsCompute<T> {
         Double sum = 0d;
         for (T vertex : vertexIterator) {
             int degree = graph.getDegree(vertex);
-            double single = (degree + 1) * (1 - distributeFunctionCompute(degree)) + 1 / vertexNumber.doubleValue() * vertexNumber;
+            double single = (degree + 1) * (1 - distributeFunctionComputeProbability(degree)) + 1 / vertexNumber.doubleValue() * vertexNumber;
             sum += single;
         }
         return sum;
@@ -232,6 +247,8 @@ public class GraphMeticsCompute<T> {
             double single = Math.log10(mediaResult) * (mediaResult);
             entropy += single;
         }
+
+        ExeactlyOnce.clear();
         return -entropy;
     }
 
@@ -255,7 +272,7 @@ public class GraphMeticsCompute<T> {
         if (openDynamicProgramming) {
             dynamicProgrammingProbability();
         }
-        AlgorithmLogic computeTopologyLogic = (degree) -> distributeFunctionComputeProbability(degree);
+        AlgorithmLogic computeTopologyLogic = (degree) -> distributeFunctionComputeProbabilityAltered(degree);
         return structEntropyCompute(computeTopologyLogic);
     }
 
@@ -270,7 +287,7 @@ public class GraphMeticsCompute<T> {
     public double getSDEntropy() {
         //计算度和度的分布(∑{(di+1)[1-p(di)]+delta})
         final double edgeAndVertexTotalValue = getEdgeAndVertexTotalValue();
-        AlgorithmLogic computeTopologyLogic = (degree) -> (((degree + 1) * (1 - distributeFunctionCompute(degree)) + 1 / vertexNumber.doubleValue() * vertexNumber) / edgeAndVertexTotalValue);
+        AlgorithmLogic computeTopologyLogic = (degree) -> (((degree + 1) * (1 - distributeFunctionComputeProbability(degree)) + 1 / vertexNumber.doubleValue() * vertexNumber) / edgeAndVertexTotalValue);
         return structEntropyCompute(computeTopologyLogic);
     }
 }
