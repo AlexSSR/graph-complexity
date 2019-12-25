@@ -11,31 +11,31 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class GraphMeticsCompute<T> {
 
-    //用于内部迭代顶点计算
+    //For iterative vertex calculations
     private Iterable<T> vertexIterator;
 
-    //用于处理融合不同的graph实现，返回相同的性质
+    //Used to handle different graph implementations, returning the same properties,provided by interface FlexibleGraph
     private FlexibleGraph graph;
 
-    //只考虑度，不考虑入度和出度、边长的分布
+    //Only considering the degree(Excluding the in-degree、out-degree and the distribution of the edge weight)
     private TreeMap<Integer, Integer> degreeMap;
 
-    //缓存离散型概率函数
+    //Cache discrete probability function
     private TreeMap<Integer, Double> degreeProbability;
 
-    //缓存离散型分布函数 key为查询条件，value为结果
+    //Cache discrete distribution function
     private TreeMap<Integer, Double> degreeDistributeFunction;
 
-    //用于缓存记录，保证每个key只被消费一次
+    //Used to cache records, ensuring that each key is consumed exactly once.
     private TreeSet<Integer> ExeactlyOnce = new TreeSet<>(Integer::compareTo);
 
-    //用于记录图的相对距离矩阵
+    //Relative distance matrix used to record the graph,provided by CommonMatrixBuilder!
     private int[][] distanceMatrix;
 
-    //
+    // vertex number
     private Integer vertexNumber;
 
-    //
+    //lock
     ReentrantLock lock = new ReentrantLock();
 
     public Double MAX_DD_ENTROPY;
@@ -90,7 +90,6 @@ public class GraphMeticsCompute<T> {
         try {
             TreeMap<Integer, Integer> map = new TreeMap<>(Integer::compareTo);
             Integer vertexNum = 0;
-            //求解分布
             for (T vertex : vertexIterator) {
                 int degree = graph.getDegree(vertex);
                 if (map.containsKey(degree)) {
@@ -107,7 +106,7 @@ public class GraphMeticsCompute<T> {
         }
     }
 
-    //求解网络总度值
+    //calculate network totala degree
     private Integer getTotalDegree() {
         if (degreeMap == null) {
             initDegreeMap();
@@ -225,7 +224,7 @@ public class GraphMeticsCompute<T> {
         return degreeMap.get(degree) / vertexNumber.doubleValue();
     }
 
-    //计算度和度的分布(∑{(di+1)[1-p(di)]+delta})
+    //calculate degree distribution (∑{(di+1)[1-p(di)]+delta})
     private double getEdgeAndVertexTotalValue() {
         Double sum = 0d;
         for (T vertex : vertexIterator) {
@@ -236,11 +235,9 @@ public class GraphMeticsCompute<T> {
         return sum;
     }
 
-    //计算度和度的分布  - ∑(N/V)*log(N/V)
-    //用于累加求和
+    //Shannon Entropy Formula
     private double structEntropyCompute(AlgorithmLogic logic) {
         double entropy = 0D;
-        //累加求和
         for (T vertex : vertexIterator) {
             int degree = graph.getDegree(vertex);
             double mediaResult = logic.processFunction(degree);
@@ -252,13 +249,13 @@ public class GraphMeticsCompute<T> {
         return -entropy;
     }
 
-    //G的拓扑信息内容
+    //Topological Information Entropy
     public double classicEntropyInfo() {
         AlgorithmLogic computeTopologyLogic = (degree) -> Math.abs(degree) / Math.abs(vertexNumber.doubleValue());
         return structEntropyCompute(computeTopologyLogic);
     }
 
-    //DD度分布熵
+    //Degree Distribution Information Entropy,but it is wrong
     public double getDDEntropy(Boolean openDynamicProgramming) {
         if (openDynamicProgramming) {
             dynamicProgramming();
@@ -267,7 +264,7 @@ public class GraphMeticsCompute<T> {
         return structEntropyCompute(computeTopologyLogic);
     }
 
-    //DD度分布熵,修正后的算法
+    //Degree Distribution Information Entropy,and it has been altered
     public double getDDEntropyAltered(Boolean openDynamicProgramming) {
         if (openDynamicProgramming) {
             dynamicProgrammingProbability();
@@ -276,16 +273,15 @@ public class GraphMeticsCompute<T> {
         return structEntropyCompute(computeTopologyLogic);
     }
 
-    //WU结构熵
+    //WU Information Entropy
     public double getWUEntropy() {
         final Double totalDegree = getTotalDegree().doubleValue();
         AlgorithmLogic computeTopologyLogic = (degree) -> degree / totalDegree;
         return structEntropyCompute(computeTopologyLogic);
     }
 
-    //SD结构熵
+    //SD Information Entropy (∑{(di+1)[1-p(di)]+delta})
     public double getSDEntropy() {
-        //计算度和度的分布(∑{(di+1)[1-p(di)]+delta})
         final double edgeAndVertexTotalValue = getEdgeAndVertexTotalValue();
         AlgorithmLogic computeTopologyLogic = (degree) -> (((degree + 1) * (1 - distributeFunctionComputeProbability(degree)) + 1 / vertexNumber.doubleValue() * vertexNumber) / edgeAndVertexTotalValue);
         return structEntropyCompute(computeTopologyLogic);

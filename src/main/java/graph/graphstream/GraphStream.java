@@ -55,6 +55,8 @@ public class GraphStream {
         System.out.println(compute4.MAX_ENTROPY);
         //graph.display();
 
+
+        // construct
         EnhancedOption option = new EnhancedOption();
         option.title().text("Entropy").subtext("Comparison result");
         option.tooltip().trigger(Trigger.axis);

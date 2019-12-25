@@ -8,16 +8,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Graph {
+public class GraphTest {
 
     public static void main(String[] args) {
 
         Integer NODE_COUNT = 10;
 
-        MutableValueGraph<String, Integer> graph = ValueGraphBuilder.undirected() //有向
-                .allowsSelfLoops(true) //允许自环
-                .expectedNodeCount(NODE_COUNT) //期望节点数
-                .nodeOrder(ElementOrder.<String>insertion()) //节点顺序
+        MutableValueGraph<String, Integer> graph = ValueGraphBuilder.undirected()
+                .allowsSelfLoops(true)
+                .expectedNodeCount(NODE_COUNT)
+                .nodeOrder(ElementOrder.<String>insertion())
                 .build();
 
         graph.putEdgeValue("RBFOX2", "RBM24", 1);
@@ -32,7 +32,7 @@ public class Graph {
 
         int sum = 0;
 
-        //经典的图G的拓扑信息内容
+        //Topological information content of classic graph G
         for (String vertex : graph.nodes()) {
             int degree = graph.degree(vertex);
             double single = Math.log10(degree) * degree;
@@ -66,7 +66,7 @@ public class Graph {
         }
         HashMap<Integer, BigDecimal> map = new HashMap<>();
 
-        //此处应该设置为懒加载，这样更有利于计算当前的数值
+        //This should be set to lazy loading, which is more conducive to calculating the current value
         for (Map.Entry<Integer, Integer> entry : hashMap.entrySet()) {
             BigDecimal value = new BigDecimal(entry.getValue());
             BigDecimal sum3 = new BigDecimal(sum2);
