@@ -3,10 +3,8 @@ package graph.graphstream;
 import com.github.abel533.echarts.axis.CategoryAxis;
 import com.github.abel533.echarts.axis.ValueAxis;
 import com.github.abel533.echarts.code.Magic;
-import com.github.abel533.echarts.code.MarkType;
 import com.github.abel533.echarts.code.Tool;
 import com.github.abel533.echarts.code.Trigger;
-import com.github.abel533.echarts.data.PointData;
 import com.github.abel533.echarts.feature.MagicType;
 import com.github.abel533.echarts.series.Bar;
 import compute.constractor.GraphBuilder;
@@ -30,10 +28,10 @@ public class GraphStream {
 
         GraphBuilder graphBuilder = new GraphBuilder();
 
-        Graph graphA = graphBuilder.read(userdirName + "rbm24.easy.graph").delimiter("\t").getGraph();
-        Graph graphB = graphBuilder.read(userdirName + "rbm24.media.graph").delimiter("\t").getGraph();
-        Graph graphC = graphBuilder.read(userdirName + "rbm24.high.graph").delimiter("\t").getGraph();
-        Graph graphD = graphBuilder.read(userdirName + "rbm24.hard.graph").delimiter("\t").getGraph();
+        Graph graphA = graphBuilder.read(userdirName + "rbm24.elementary.graph").delimiter("\t").getGraph();
+        Graph graphB = graphBuilder.read(userdirName + "rbm24.medium.graph").delimiter("\t").getGraph();
+        Graph graphC = graphBuilder.read(userdirName + "rbm24.advanced.graph").delimiter("\t").getGraph();
+        Graph graphD = graphBuilder.read(userdirName + "rbm24.dazzling.graph").delimiter("\t").getGraph();
 
         Graph graph1 = ViewerFactory.getDefaultStyle(graphA);
         Graph graph2 = ViewerFactory.getDefaultStyle(graphB);
@@ -72,7 +70,7 @@ public class GraphStream {
         option.legend("Classic_Topology_Entropy","DD_Entropy","WU_Entropy","SD_Entropy");
         option.toolbox().show(true).feature(Tool.mark, Tool.dataView, new MagicType(Magic.line, Magic.bar).show(true), Tool.restore, Tool.saveAsImage);
         option.calculable(true);
-        option.xAxis(new CategoryAxis().data("easy", "medal", "hard", "complex"));
+        option.xAxis(new CategoryAxis().data("elementary", "medium", "advanced", "dazzling"));
         option.yAxis(new ValueAxis());
 
         Bar bar1 = new Bar("Classic_Topology_Entropy");

@@ -16,7 +16,7 @@ public class TestComputer {
         String userdir = System.getProperty("user.dir");
         String userdirName = new File(userdir).getPath() + "/src" + "/main" + "/resources/";
         GraphBuilder graphBuilder = new GraphBuilder();
-        Graph graph3 = graphBuilder.read(userdirName + "rbm24.media.graph").delimiter("\t").getGraph();
+        Graph graph3 = graphBuilder.read(userdirName + "rbm24.medium.graph").delimiter("\t").getGraph();
         Iterable<Node> eachNode3 = (Iterable<Node>) graph3.getEachNode();
         FlexibleGraph flexibleGraph3 = new GraphStreamFlexibleGraphImpl(graph3);
         GraphMeticsCompute<Node> compute3 = new GraphMeticsCompute<>(eachNode3, flexibleGraph3);
