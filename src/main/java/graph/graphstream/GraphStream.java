@@ -12,6 +12,7 @@ import com.github.abel533.echarts.series.Bar;
 import compute.constractor.GraphBuilder;
 import compute.constractor.interfaces.FlexibleGraph;
 import compute.algorithm.GraphMeticsCompute;
+import compute.view.ViewerFactory;
 import graph.graphstream.util.GraphStreamFlexibleGraphImpl;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -29,10 +30,15 @@ public class GraphStream {
 
         GraphBuilder graphBuilder = new GraphBuilder();
 
-        Graph graph1 = graphBuilder.read(userdirName + "rbm24.easy.graph").delimiter("\t").getGraph();
-        Graph graph2 = graphBuilder.read(userdirName + "rbm24.media.graph").delimiter("\t").getGraph();
-        Graph graph3 = graphBuilder.read(userdirName + "rbm24.high.graph").delimiter("\t").getGraph();
-        Graph graph4 = graphBuilder.read(userdirName + "rbm24.hard.graph").delimiter("\t").getGraph();
+        Graph graphA = graphBuilder.read(userdirName + "rbm24.easy.graph").delimiter("\t").getGraph();
+        Graph graphB = graphBuilder.read(userdirName + "rbm24.media.graph").delimiter("\t").getGraph();
+        Graph graphC = graphBuilder.read(userdirName + "rbm24.high.graph").delimiter("\t").getGraph();
+        Graph graphD = graphBuilder.read(userdirName + "rbm24.hard.graph").delimiter("\t").getGraph();
+
+        Graph graph1 = ViewerFactory.getDefaultStyle(graphA);
+        Graph graph2 = ViewerFactory.getDefaultStyle(graphB);
+        Graph graph3 = ViewerFactory.getDefaultStyle(graphC);
+        Graph graph4 = ViewerFactory.getDefaultStyle(graphD);
 
         Iterable<Node> eachNode1 = (Iterable<Node>) graph1.getEachNode();
         Iterable<Node> eachNode2 = (Iterable<Node>) graph2.getEachNode();
@@ -53,8 +59,11 @@ public class GraphStream {
         System.out.println(compute2.MAX_ENTROPY);
         System.out.println(compute3.MAX_ENTROPY);
         System.out.println(compute4.MAX_ENTROPY);
-        //graph.display();
 
+        compute1.GraphDisplay();
+        compute2.GraphDisplay();
+        compute3.GraphDisplay();
+        compute4.GraphDisplay();
 
         // construct
         EnhancedOption option = new EnhancedOption();
